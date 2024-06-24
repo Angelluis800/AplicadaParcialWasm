@@ -6,7 +6,7 @@ namespace AplicadaParcialWasm.Client.Services;
 
 public class ArticuloService(HttpClient httpClient) : IClienteService<Articulos>
 {
-    public async Task<List<Articulos>> GetAllAsync()
+    public async Task<List<Articulos>> GetTodoAsync()
     {
         var resultado = await httpClient.GetAsync("api/Articulos");
         if (resultado.IsSuccessStatusCode)
@@ -15,7 +15,7 @@ public class ArticuloService(HttpClient httpClient) : IClienteService<Articulos>
         return null!;
     }
 
-    public async Task<Articulos> GetByIdAsync(int id)
+    public async Task<Articulos> GetPorIdAsync(int id)
     {
         var resultado = (await httpClient.GetAsync($"api/Articulos/{id}"))!;
 
@@ -25,7 +25,6 @@ public class ArticuloService(HttpClient httpClient) : IClienteService<Articulos>
         return null!;
     }
 
-    //
     public async Task<bool> ExisteDescripcionAsync(int id, string descripcion)
     {
         var response = await httpClient.GetAsync($"api/articulos/existe-descripcion?id={id}&descripcion={descripcion}");
@@ -33,7 +32,7 @@ public class ArticuloService(HttpClient httpClient) : IClienteService<Articulos>
         return await response.Content.ReadFromJsonAsync<bool>();
     }
 
-    public async Task<Articulos> CreateAsync(Articulos articulo)
+    public async Task<Articulos> CrearAsync(Articulos articulo)
     {
         var resultado = await httpClient.PostAsJsonAsync("api/Articulos", articulo);
 
@@ -43,13 +42,13 @@ public class ArticuloService(HttpClient httpClient) : IClienteService<Articulos>
         return null!;
     }
 
-    public async Task<bool> UpdateAsync(int id, Articulos articulo)
+    public async Task<bool> ModificarAsync(int id, Articulos articulo)
     {
         var resultado = await httpClient.PutAsJsonAsync($"api/Articulos/{id}", articulo);
         return resultado.IsSuccessStatusCode;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> EliminarAsync(int id)
     {
         var resultado = await httpClient.DeleteAsync($"api/Articulos/{id}");
         return resultado.IsSuccessStatusCode;
