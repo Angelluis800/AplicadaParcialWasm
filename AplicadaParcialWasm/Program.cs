@@ -1,5 +1,8 @@
 using AplicadaParcialWasm.Client.Pages;
+using AplicadaParcialWasm.Client.Services;
 using AplicadaParcialWasm.Components;
+using Shared.Models;
+using Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,8 @@ builder.Services.AddScoped(a => new HttpClient
 {
     BaseAddress = new Uri((builder.Configuration.GetSection("Url")!.Value)!)
 });
+
+builder.Services.AddScoped<IClienteService<Articulos>, ArticuloService>();
 
 var app = builder.Build();
 
