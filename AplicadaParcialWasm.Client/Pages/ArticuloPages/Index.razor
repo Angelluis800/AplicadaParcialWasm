@@ -3,87 +3,81 @@
 @inject IClienteService<Articulos> articuloService
 @inject NavigationManager Navigation
 
-<PageTitle>Art&iacute;culo Index</PageTitle>
+<PageTitle> Art&iacute;culos Index</PageTitle>
+
 <div class="container">
-	<div class="card shadow-lg">
-		@*Header*@
-		<div class="card-header text-center">
-			<div class="bg-primary text-white">
-				<h3><strong>Listado de Art&iacute;culos</strong></h3>
-			</div>
-		</div>
-		@*Body*@
-		<div class="card-body">
-			@*Labels*@
-			<div class="row">
-				<div class="col-3">
-					<label class="form-label" for="Filtro"><strong>Filtrar por</strong></label>
-				</div>
-				<div class="col-4">
-					<label class="form-label" for="ValorFiltro"><strong>B&uacute;squeda</strong></label>
-				</div>
-			</div>
-			<div class="row">
-				@*Filtro*@
-				<div class="col-3">
-					<InputSelect class="form-select" @bind-Value="filtro">
-						<option value="" selected>Elija una opción</option>
-						<option value="id"><strong>Id</strong></option>
-						<option value="descripcion"><strong>Descripci&oacute;n</strong></option>
-					</InputSelect>
-				</div>
-				@*Búsqueda*@
-				<div class="col-4">
-					<div class="input-group">
-						<input class="form-control" @bind="valorFiltro" placeholder="Buscar" />
-						<button type="button" class="btn btn-outline-primary bi bi-search" @**@"></button>
-					</div>
-				</div>
-				<div class="col-auto">
-					<button type="button" class="btn btn-outline-secondary bi bi-arrow-counterclockwise" @onclick="Restablecer"> Restablecer</button>
-				</div>
-				<div class="col text-end">
-					<button type="button" class="btn btn-outline-primary ms-2" @onclick="Crear">Crear</button>
-				</div>
-			</div>
-			@*Tabla*@
-			<div class="text-center mt-3">
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>ArticuloId</th>
-							<th>Descripci&oacute;n</th>
-							<th>Costo</th>
-							<th>Ganancia</th>
-							<th>Precio</th>
-							<th>Observar</th>
-							<th>Editar</th>
-							<th>Eliminar</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach (var articulo in Articulo)
-						{
-							<tr>
-								<td>@articulo.ArticuloId</td>
-								<td>@articulo.Descripcion</td>
-								<td>@articulo.Costo</td>
-								<td>@articulo.Ganancia</td>
-								<td>@articulo.Precio</td>
-								<td><button type="button" class="btn btn-outline-primary" @onclick="()=>Detalles(articulo.ArticuloId)"></button></td>
-								<td><button type="button" class="btn btn-outline-warning" @onclick="()=>Editar(articulo.ArticuloId)"></button></td>
-								<td><button type="button" class="btn btn-outline-danger" @onclick="()=>Eliminar(articulo.ArticuloId)"></button></td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
-		</div>
-		@*Footer*@
-		<div class="card-footer">
-			<p><strong>Art&iacute;culos Agregados: </strong>@Articulo.Count()</p>
-		</div>
-	</div>
+    <div class="card shadow-lg">
+        @*Header*@
+        <div class="card-header text-white text-center">
+            <div class="bg-primary rounded">
+                <h1>Registro de Art&iacute;culos</h1>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <div class="row mb-3 align-items-end">
+                @*Filtro*@
+                <div class="col-md-2">
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <select @bind="filtro" class="form-select">
+                        <option value="id">Id</option>
+                        <option value="descripcion">Descripcion</option>                        
+                    </select>
+                </div>
+                @*Busqueda*@
+                <div class="col-md-5">
+                    <label for="ValorFiltro" class="form-label">B&uacute;squeda:</label>
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @*@onclick="Buscar"*@ class="btn btn-outline-info"></button>
+                    </div>
+                </div>
+                @*Restablecer Tabla*@
+                <div class="col-md-2">
+                    <button class="btn btn-outline-dark" @onclick="OnInitializedAsync">Restablecer</button>
+                </div>
+                @*Crear*@
+                <div class="col-md-3 text-end">
+                    <button class="btn btn-success" @onclick="Crear">Nuevo</button>
+                </div>
+            </div>
+            @*Tabla*@
+            <table class="table table-bordered">
+                <thead class="text-center">
+                    <tr>
+                        <th>Art&iacute;culoId</th>
+                        <th>Descripci&oacute;n</th>
+                        <th>Costo</th>
+                        <th>% de Ganancia</th>
+                        <th>Precio</th>
+                        <th>Detalles</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var articulo in Articulo)
+                    {
+                        <tr class="text-center">
+                            <td>@articulo.ArticuloId</td>
+                            <td>@articulo.Descripcion</td>
+                            <td>@articulo.Costo.ToString("N2")</td>
+                            <td>@articulo.Ganancia %</td>
+                            <td>@articulo.Precio</td>                                                       
+                            <td><button class="btn btn-outline-info" @onclick="()=>Detalles(articulo.ArticuloId)"></button></td>
+                            <td><button class="btn btn-outline-warning" @onclick="()=>Editar(articulo.ArticuloId)"></button></td>
+                            <td><button class="btn btn-outline-danger" @onclick="()=>Eliminar(articulo.ArticuloId)"></button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p>Total de Art&iacute;culos: @Articulo.Count()</p>
+        </div>
+    </div>
 </div>
 
 @code {
