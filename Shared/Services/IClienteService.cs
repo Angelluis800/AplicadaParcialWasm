@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared;
+namespace Shared.Services;
 
-public interface IClienteServicio<T>
+public interface IClienteService<T>
 {
     public Task<List<T>> GetTodoAsync();
     public Task<T> GetPorIdAsync(int id);
