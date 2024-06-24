@@ -29,16 +29,16 @@
                     <label for="ValorFiltro" class="form-label">B&uacute;squeda:</label>
                     <div class="input-group">
                         <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
-                        <button @*@onclick="Buscar"*@ class="btn btn-outline-info"></button>
+                        <button @*@onclick="Buscar" *@ class="bi bi-search btn btn-outline-info"></button>
                     </div>
                 </div>
                 @*Restablecer Tabla*@
                 <div class="col-md-2">
-                    <button class="btn btn-outline-dark" @onclick="OnInitializedAsync">Restablecer</button>
+                    <button class="btn btn-outline-dark bi bi-arrow-clockwise" @onclick="OnInitializedAsync"> Restablecer</button>
                 </div>
                 @*Crear*@
                 <div class="col-md-3 text-end">
-                    <button class="btn btn-success" @onclick="Crear">Nuevo</button>
+                    <button class="btn btn-success bi bi-plus-square-fill" @onclick="Crear"> Nuevo</button>
                 </div>
             </div>
             @*Tabla*@
@@ -64,10 +64,10 @@
                             <td>@articulo.Descripcion</td>
                             <td>@articulo.Costo.ToString("N2")</td>
                             <td>@articulo.Ganancia %</td>
-                            <td>@articulo.Precio</td>                                                       
-                            <td><button class="btn btn-outline-info" @onclick="()=>Detalles(articulo.ArticuloId)"></button></td>
-                            <td><button class="btn btn-outline-warning" @onclick="()=>Editar(articulo.ArticuloId)"></button></td>
-                            <td><button class="btn btn-outline-danger" @onclick="()=>Eliminar(articulo.ArticuloId)"></button></td>
+                            <td>@articulo.Precio</td>
+                            <td><button class="bi bi-eye btn btn-outline-info" @onclick="()=>Detalles(articulo.ArticuloId)"></button></td>
+                            <td><button class="bi bi-pencil-square btn btn-outline-warning" @onclick="()=>Editar(articulo.ArticuloId)"></button></td>
+                            <td><button class="bi bi-trash-fill btn btn-outline-danger" @onclick="()=>Eliminar(articulo.ArticuloId)"></button></td>
                         </tr>
                     }
                 </tbody>
