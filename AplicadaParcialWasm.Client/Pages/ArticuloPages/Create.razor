@@ -1,0 +1,118 @@
+﻿@page "/Articulo/Crear"
+
+@inject IClienteService<Articulos> articuloService
+@inject NavigationManager navigation
+
+<PageTitle>Crear Art&iacute;culo</PageTitle>
+<EditForm Model="Articulo" OnValidSubmit="Guardar">    
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            @*Header*@
+            <div class="card-header text-white text-center">
+                <div class="bg-primary rounded">
+                    <h1>Crear Art&iacute;culo</h1>
+                </div>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                <div class="col-1">
+                    @*Id*@
+                    <label class="form-label" for="Id">Id</label>
+                    <InputNumber id="Id" class="form-control" readonly @bind-Value="Articulo.ArticuloId"></InputNumber>
+                </div>
+                <div class="row">
+                    @*Descripcion*@
+                    <div class="col-3">
+                        <label class="form-label" for="Nombres">Nombre</label>
+                        <InputText id="Nombres" class="form-control" @bind-Value="Articulo.Descripcion" placeholder="Ej: Coca Cola"></InputText>
+                        <ValidationMessage For="@(()=>Articulo.Descripcion)"></ValidationMessage>
+                    </div>
+					@*Costo*@
+					<div class="col-3">
+						<label class="form-label" for="costo"><strong>Costo</strong></label>
+						<input class="form-control" id="costo" @bind="Costo" @bind:event="oninput" />
+						<ValidationMessage For="(()=> Articulo.Costo)" />
+					</div>
+					@*Ganancia*@
+					<div class="col-3">
+						<label class="form-label" for="ganancia"><strong>Ganancia</strong></label>
+						<input class="form-control" id="ganancia" @bind="Ganancia" @bind:event="oninput" />
+						<ValidationMessage For="(()=> Articulo.Ganancia)" />
+					</div>
+					@*Precio*@
+					<div class="col-3">
+						<label class="form-label" for="precio"><strong>Precio</strong></label>
+						<label class="form-control" id="precio">@Articulo.Precio.ToString("N2")</label>
+					</div>
+                </div>
+            </div>
+            @*Footer*@
+            <div class="card-footer">
+                <button class="btn btn-outline-success" type="submit"> Guardar </button>
+                <button class="btn btn-outline-secondary" @onclick="Volver">Volver</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+	public Articulos Articulo { get; set; } = new Articulos();
+	public string Mensaje { get; set; } = string.Empty;
+
+	private async Task Guardar()
+	{
+		if (await Validar())
+		{
+			Mensaje = "Ya existe un articulo con esta descripción";
+			return;
+		}
+
+		var crear = await articuloService.CrearAsync(Articulo);
+		if (crear != null)
+			Mensaje = $"El artículo {Articulo.Descripcion} se ha creado correctamente";
+
+		else
+			Mensaje = "No se ha creado correctamente";
+	}
+
+	public double Costo
+	{
+		get => Articulo.Costo;
+		set
+		{
+			if (Articulo.Costo != value)
+			{
+				Articulo.Costo = value;
+				CalcularPrecio();
+			}
+		}
+	}
+
+	public double Ganancia
+	{
+		get => Articulo.Ganancia;
+		set
+		{
+			if (Articulo.Ganancia != value)
+			{
+				Articulo.Ganancia = value;
+				CalcularPrecio();
+			}
+		}
+
+	}
+
+	private void CalcularPrecio()
+	{
+		Articulo.Precio = Articulo.Costo + (Articulo.Costo * (Articulo.Ganancia / 100));
+	}
+
+	private async Task<bool> Validar()
+	{
+		var existe = await articuloService.ExisteDescripcionAsync(Articulo.ArticuloId, Articulo.Descripcion);
+		return existe;
+	}
+
+	public void Volver() => navigation.NavigateTo("/Articulo/Index");
+}
