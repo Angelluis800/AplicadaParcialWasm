@@ -1,4 +1,5 @@
 using ArticuloApi.Api.DAL;
+using ArticuloApi.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 //Inyectando ConnectionStrings
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlite(ConStr));
+//Inyectando Servicios
+builder.Services.AddScoped<ArticuloService>();
 
 var app = builder.Build();
 
