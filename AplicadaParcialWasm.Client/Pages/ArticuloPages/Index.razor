@@ -2,6 +2,7 @@
 
 @inject IClienteService<Articulos> articuloService
 @inject NavigationManager Navigation
+@rendermode InteractiveWebAssembly
 
 <PageTitle> Art&iacute;culos Index</PageTitle>
 
@@ -35,7 +36,7 @@
                 </div>
                 @*Restablecer Tabla*@
                 <div class="col-md-2">
-                    <button class="btn btn-outline-dark bi bi-arrow-clockwise" @onclick="OnInitializedAsync"> Restablecer</button>
+                    <button class="btn btn-outline-dark bi bi-arrow-clockwise" @onclick="Restablecer"> Restablecer</button>
                 </div>
                 @*Crear*@
                 <div class="col-md-3 text-end">
@@ -82,7 +83,7 @@
 </div>
 
 @code {
-	public List<Articulos> Articulo { get; set; } = new List<Articulos>();
+	public List<Articulos> Articulo = new List<Articulos>();
 	private string filtro = "";
 	private string valorFiltro = "";
 
@@ -105,16 +106,16 @@
 
 	public void Detalles(int id)
 	{
-		Navigation.NavigateTo($"/Articulo/Detalles/{id}");
+		Navigation.NavigateTo($"/Articulo/Detalles/articuloId={id}");
 	}
 
 	public void Editar(int id)
 	{
-		Navigation.NavigateTo($"/Articulo/Editar/{id}");
+        Navigation.NavigateTo($"/Articulo/Editar/articuloId={id}");
 	}
 
 	public void Eliminar(int id)
 	{
-		Navigation.NavigateTo($"/Articulo/Eliminar/{id}");
+        Navigation.NavigateTo($"/Articulo/Eliminar/articuloId={id}");
 	}
 }
