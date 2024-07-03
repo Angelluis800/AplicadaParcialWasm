@@ -2,6 +2,7 @@
 
 @inject IClienteService<Articulos> articuloService
 @inject NavigationManager navigation
+@rendermode InteractiveWebAssembly
 
 <PageTitle>Crear Art&iacute;culo</PageTitle>
 <EditForm Model="Articulo" OnValidSubmit="Guardar">    
@@ -50,11 +51,12 @@
             @*Footer*@
             <div class="card-footer">
                 <button class="btn btn-outline-success" type="submit"> Guardar </button>
-                <button class="btn btn-outline-secondary" @onclick="Volver">Volver</button>
+				<button class="btn btn-outline-secondary bi bi-arrow-90deg-left" @onclick="Volver">Volver</button>
             </div>
         </div>
     </div>
 </EditForm>
+@Mensaje
 
 @code {
 	public Articulos Articulo { get; set; } = new Articulos();
@@ -110,8 +112,10 @@
 
 	private async Task<bool> Validar()
 	{
-		var existe = await articuloService.ExisteDescripcionAsync(Articulo.ArticuloId, Articulo.Descripcion);
-		return existe;
+		var lista = await articuloService.GetTodoAsync();
+		if (lista.Where(d => d.Descripcion!.ToLower() == Articulo.Descripcion!.ToLower()).Any())
+			return true;
+		return false;
 	}
 
 	public void Volver() => navigation.NavigateTo("/Articulo/Index");
