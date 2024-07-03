@@ -1,72 +1,51 @@
 ﻿using ArticuloApi.Api.DAL;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
+using Shared.Services;
 using System.Linq.Expressions;
 
 namespace ArticuloApi.Api.Services;
 
-public class ArticuloService(Contexto _contexto)
+public class ArticuloService(Contexto contexto) : IApiService<Articulos>
 {
-    public async Task<bool> Guardar(Articulos articulo)
-    {
-        if (!await Existe(articulo.ArticuloId))
-            return await Insertar(articulo);
-        else
-            return await Modificar(articulo);
-    }
+	public async Task<List<Articulos>> GetAllAsync()
+	{
+		return await contexto.Articulos.ToListAsync();
+	}
 
-    private async Task<bool> Existe(int articuloId)
-    {
-        return await _contexto.Articulos
-            .AnyAsync(a => a.ArticuloId == articuloId);
-    }
+	public async Task<Articulos> GetByIdAsync(int id)
+	{
+		return (await contexto.Articulos.FindAsync(id))!;
+	}
 
-    public async Task<bool> ExisteDescripcion(int id, string descripcion)
-    {
-        return await _contexto.Articulos.AnyAsync(a => a.ArticuloId == id
-        && a.Descripcion.ToLower().Equals(descripcion.ToLower()));
-    }
+	public async Task<Articulos> CreateAsync(Articulos articulo)
+	{
+		contexto.Articulos.Add(articulo);
 
-    private async Task<bool> Insertar(Articulos articulo)
-    {
-        _contexto.Articulos.Add(articulo);
-        if (articulo != null)
-            articulo.Precio = articulo.Costo + (articulo.Costo * (articulo.Ganancia / 100));
+		if (articulo != null)
+			articulo.Precio = articulo.Costo + (articulo.Costo * (articulo.Ganancia / 100));
 
-        return await _contexto.SaveChangesAsync() > 0;
-    }
+		await contexto.SaveChangesAsync();
+		return articulo!;
+	}
 
-    private async Task<bool> Modificar(Articulos articulo)
-    {
-        _contexto.Articulos.Update(articulo);
-        if (articulo != null)
-            articulo.Precio = articulo.Costo + (articulo.Costo * (articulo.Ganancia / 100));
+	public async Task<bool> UpdateAsync(Articulos articulo)
+	{
+		contexto.Entry(articulo).State = EntityState.Modified;
 
-        var modificado = await _contexto.SaveChangesAsync() > 0;
-        _contexto.Entry(articulo).State = EntityState.Detached;
-        return modificado;
-    }
+		if (articulo != null)
+			articulo.Precio = articulo.Costo + (articulo.Costo * (articulo.Ganancia / 100));
 
-    public async Task<bool?> Eliminar(int id)
-    {
-        return await _contexto.Articulos
-            .AsNoTracking()
-            .Where(a => a.ArticuloId == id)
-            .ExecuteDeleteAsync() > 0;
-    }
+		return await contexto.SaveChangesAsync() > 0;
+	}
 
-    public async Task<Articulos?> Buscar(int id)
-    {
-        return await _contexto.Articulos
-            .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.ArticuloId == id);
-    }
+	public async Task<bool> DeleteAsync(int id)
+	{
+		var articulo = await contexto.Articulos.FindAsync(id);
+		if (articulo == null)
+			return false;
 
-    public async Task<List<Articulos>> Listar(Expression<Func<Articulos, bool>> criterio)
-    {
-        return await _contexto.Articulos
-            .AsNoTracking()
-            .Where(criterio)
-            .ToListAsync();
-    }
+		contexto.Articulos.Remove(articulo);
+		return await contexto.SaveChangesAsync() > 0;
+	}
 }
