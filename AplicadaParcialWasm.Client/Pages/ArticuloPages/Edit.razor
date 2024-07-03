@@ -1,7 +1,8 @@
-﻿@page "/Articulo/Editar"
+﻿@page "/Articulo/Editar/articuloId={ArticuloId:int}"
 
 @inject IClienteService<Articulos> articuloService
 @inject NavigationManager navigation
+@rendermode InteractiveWebAssembly
 
 <PageTitle>Editar Art&iacute;culo</PageTitle>
 <EditForm Model="Articulo" OnValidSubmit="Editar">
@@ -11,7 +12,7 @@
 			@*Header*@
 			<div class="card-header text-white text-center">
 				<div class="bg-primary rounded">
-					<h1>Crear Art&iacute;culo</h1>
+					<h1>Editar Art&iacute;culo</h1>
 				</div>
 			</div>
 			@*Body*@
@@ -50,15 +51,25 @@
 			@*Footer*@
 			<div class="card-footer">
 				<button class="bi bi-pencil-square btn btn-outline-success" type="submit"> Editar </button>
-				<button class="btn btn-outline-secondary" @onclick="Volver">Volver</button>
+				<button class="btn btn-outline-secondary bi bi-arrow-90deg-left" @onclick="Volver">Volver</button>
 			</div>
 		</div>
 	</div>
 </EditForm>
+@Mensaje
 
 @code {
+
+	[Parameter]
+	public int ArticuloId { get; set; }
+
 	public Articulos Articulo { get; set; } = new Articulos();
 	public string Mensaje { get; set; } = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Articulo = await articuloService.GetPorIdAsync(ArticuloId);
+	}
 
 	private async Task Editar()
 	{
@@ -68,7 +79,7 @@
 			return;
 		}
 
-		var crear = await articuloService.CrearAsync(Articulo);
+		var crear = await articuloService.ModificarAsync(ArticuloId,Articulo);
 		if (crear != null)
 			Mensaje = $"El artículo {Articulo.Descripcion} se ha Editado correctamente";
 
@@ -110,8 +121,10 @@
 
 	private async Task<bool> Validar()
 	{
-		var existe = await articuloService.ExisteDescripcionAsync(Articulo.ArticuloId, Articulo.Descripcion);
-		return existe;
+		var lista = await articuloService.GetTodoAsync();
+		if (lista.Where(d => d.Descripcion!.ToLower() == Articulo.Descripcion!.ToLower()).Any())
+			return true;
+		return false;
 	}
 
 	public void Volver() => navigation.NavigateTo("/Articulo/Index");
