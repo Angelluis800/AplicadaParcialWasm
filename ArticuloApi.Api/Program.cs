@@ -1,6 +1,8 @@
 using ArticuloApi.Api.DAL;
 using ArticuloApi.Api.Services;
 using Microsoft.EntityFrameworkCore;
+using Shared.Models;
+using Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +17,12 @@ builder.Services.AddSwaggerGen();
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlite(ConStr));
 //Inyectando Servicios
-builder.Services.AddScoped<ArticuloService>();
+builder.Services.AddScoped<IApiService<Articulos>, ArticuloService>();
 //Inyectando Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAnyOrigin",
-        builder => builder.AllowAnyOrigin() 
+        builder => builder.AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
@@ -31,6 +33,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
