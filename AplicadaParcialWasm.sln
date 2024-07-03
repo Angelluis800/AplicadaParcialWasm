@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AplicadaParcialWasm", "AplicadaParcialWasm\AplicadaParcialWasm.csproj", "{E33749ED-7A55-43C9-ACEA-94956C6722F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AplicadaParcialWasm", "AplicadaParcialWasm\AplicadaParcialWasm.csproj", "{E33749ED-7A55-43C9-ACEA-94956C6722F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AplicadaParcialWasm.Client", "AplicadaParcialWasm.Client\AplicadaParcialWasm.Client.csproj", "{2F2057A3-7DA7-4BF7-A52D-2BD4641B3207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AplicadaParcialWasm.Client", "AplicadaParcialWasm.Client\AplicadaParcialWasm.Client.csproj", "{2F2057A3-7DA7-4BF7-A52D-2BD4641B3207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArticuloApi.Api", "ArticuloApi.Api\ArticuloApi.Api.csproj", "{12F0C7A3-2A88-4A9A-95DB-878C911C5357}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArticuloApi.Api", "ArticuloApi.Api\ArticuloApi.Api.csproj", "{12F0C7A3-2A88-4A9A-95DB-878C911C5357}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{8E4A4A95-1C02-4978-A94A-78C9AED2319B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{8E4A4A95-1C02-4978-A94A-78C9AED2319B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
