@@ -8,81 +8,69 @@ using Microsoft.EntityFrameworkCore;
 using ArticuloApi.Api.DAL;
 using Shared.Models;
 using ArticuloApi.Api.Services;
+using Shared.Services;
 
-namespace ArticuloApi.Api.Controllers;
+namespace Articulo.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ArticulosController(ArticuloService articuloService) : ControllerBase
+public class ArticulosController(IApiService<Articulos> apiService) : ControllerBase
 {
-    // GET: api/Articulos
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Articulos>>> GetArticulos()
-    {
-        var articulo = await articuloService.Listar(a => true);
+	// GET: api/Articulos
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Articulos>>> GetArticulos()
+	{
+		return await apiService.GetAllAsync();
+	}
 
-        if (articulo is null)
-            return NotFound("No se encontraron artículos.");
+	// GET: api/Articulos/5
+	[HttpGet("{id}")]
+	public async Task<ActionResult<Articulos>> GetArticulos(int id)
+	{
+		var articulos = await apiService.GetByIdAsync(id);
 
-        return Ok(articulo);
-    }
+		if (articulos is null)
+			return NotFound($"No se encontró el artículo con ID {id}.");
 
-    // GET: api/Articulos/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Articulos>> GetArticulos(int id)
-    {
-        var articulos = await articuloService.Buscar(id);
+		return articulos;
+	}
 
-        if (articulos is null)
-            return NotFound($"No se encontró el artículo con ID {id}.");
+	// POST: api/Articulos
+	[HttpPost]
+	public async Task<ActionResult<Articulos>> PostArticulos(Articulos articulos)
+	{
 
-        return articulos;
-    }
+		var guardado = await apiService.CreateAsync(articulos);
 
-    //GET
-    [HttpGet("existe-descripcion")]
-    public async Task<ActionResult<bool>> ExisteDescripcion(int id, string descripcion)
-    {
-        var existe = await articuloService.ExisteDescripcion(id, descripcion);
-        return Ok(existe);
-    }
+		if (guardado != null)
+			return Ok(guardado);
 
-    // POST: api/Articulos
-    [HttpPost]
-    public async Task<ActionResult<Articulos>> PostArticulos(Articulos articulos)
-    {
+		return NotFound("No se pudo guardar el artículo.");
+	}
 
-        var guardado = await articuloService.Guardar(articulos);
+	// PUT: api/Articulos/5
+	[HttpPut("{id}")]
+	public async Task<IActionResult> PutArticulos(int id, Articulos articulos)
+	{
+		if (id != articulos.ArticuloId)
+			return BadRequest("El ID del artículo no coincide con el ID de la URL.");
 
-        if (guardado != null)
-            return Ok(guardado);
+		var modificado = await apiService.UpdateAsync(articulos);
+		if (!modificado)
+			return NotFound($"No se pudo actualizar el artículo con ID {id}. Puede que el artículo no exista.");
 
-        return NotFound("No se pudo guardar el artículo.");
-    }
+		return NoContent();
+	}
 
-    // PUT: api/Articulos/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutArticulos(int id, Articulos articulos)
-    {
-        if (id != articulos.ArticuloId)
-            return BadRequest("El ID del artículo no coincide con el ID de la URL.");
+	// DELETE: api/Articulos/5
+	[HttpDelete("{id}")]
+	public async Task<IActionResult> DeleteArticulos(int id)
+	{
+		var articulos = await apiService.DeleteAsync(id);
 
-        var modificado = await articuloService.Guardar(articulos);
-        if (!modificado)
-            return NotFound($"No se pudo actualizar el artículo con ID {id}. Puede que el artículo no exista.");
+		if (!articulos)
+			return NotFound($"No se pudo eliminar el artículo con ID {id}. Puede que el artículo no exista.");
 
-        return NoContent();
-    }
-
-    // DELETE: api/Articulos/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteArticulos(int id)
-    {
-        var articulos = await articuloService.Eliminar(id);
-
-        if (articulos == null)
-            return NotFound($"No se pudo eliminar el artículo con ID {id}. Puede que el artículo no exista.");
-
-        return NoContent();
-    }
+		return NoContent();
+	}
 }
